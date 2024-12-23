@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/add-customer.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:44 GMT -->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Add Employee</title>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/public/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/public/css/bootstrap.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/all.min.css">
+
+	<!-- Select2 CSS -->
+	<link rel="stylesheet" href="/public/plugins/select2/css/select2.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="/public/css/style.css">
+
+	<link rel="stylesheet" href="/public/log/vendor/toaster/toaster/build/toastr.css">
+	<script src="/public/log/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="/public/log/vendor/toaster/toaster/build/toastr.min.js"></script>
+	<script src="/public/js/toaster.js"></script>
+</head>
+
+<body>
+
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
+		<%- include('partial/header'); %>
+
+
+			<!-- Page Wrapper -->
+			<div class="page-wrapper">
+				<div class="content container-fluid">
+
+					<!-- Page Header -->
+
+					<!-- /Page Header -->
+
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-body">
+									<h4 class="card-title">Basic Info</h4>
+									<div>
+										<div class="row">
+											<div class="col-md-3"></div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>Name</label>
+													<input type="text" class="form-control" id="uname">
+												</div>
+												<div class="form-group">
+													<label>Email</label>
+													<input type="email" class="form-control" id="uemail">
+												</div>
+												<div class="form-group">
+													<label>Number</label>
+													<input type="text" class="form-control" id="number">
+												</div>
+												<div class="form-group">
+													<label>Password</label>
+													<input type="text" class="form-control" readonly value="smartwayonline@#123" id="password">
+												</div>
+												<div class="form-group">
+													<label>Role</label>
+													<div>
+														<label for="admin"> <input type="radio" name="role"
+																value="admin" id="admin">Admin</label>
+														<label for="semi-admin"><input type="radio" name="role"
+																value="semi-admin" id="semi-admin" checked>Semi
+															Admin</label>
+													</div>
+												</div>
+												<div class="text-right mt-4" style="float: left;">
+													<button type="submit" class="btn btn-primary" onclick="addclient()"
+														id="btnclient">Add
+														Employee</button>
+												</div>
+
+											</div>
+											<div class="col-md-3">
+
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Wrapper -->
+
+	</div>
+	<!-- /Main Wrapper -->
+
+	<script src="/public/js/main/jquery-3.5.1.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="/public/js/main/popper.min.js"></script>
+	<script src="/public/js/main/bootstrap.min.js"></script>
+
+	<!-- Feather Icon JS -->
+	<script src="/public/js/main/feather.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="/public/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+	<!-- Select2 JS -->
+	<script src="/public/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Datepicker Core JS -->
+	<script src="/public/plugins/moment/moment.min.js"></script>
+	<script src="/public/js/main/bootstrap-datetimepicker.min.js"></script>
+
+	<!-- Datatables JS -->
+	<script src="/public/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/public/plugins/datatables/datatables.min.js"></script>
+
+	<!-- Custom JS -->
+	<script src="/public/js/main/script.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase.js"></script>
+	<script src="/public/js/custom/firebase.js"></script>
+</body>
+<script>
+
+
+	async function addclient() {
+
+		document.getElementById("btnclient").innerHTML = " <span class='spinner-border spinner-border-sm mr-2' role='status'style='padding: 7px;' aria-hidden='true'></span>please wait..."
+
+		var name = document.getElementById("uname").value
+		var email = document.getElementById("uemail").value
+		var number = document.getElementById("number").value
+		var password=document.getElementById("password").value
+		var roles = document.getElementsByName("role")
+		var role
+		for (var i = 0; i < roles.length; i++) {
+			if (roles[i].checked) {
+				role = roles[i].value
+			}
+		}
+		var newuser = {
+			name: name,
+			email: email,
+			role: role,
+			password:password,
+			userid: Date.now().toString(),
+			number: number
+		}
+		const createUser = await axios.post(`https://api.smartwayonline.in/admin/create`, newuser).then((res) => { return res.data }).catch((err) => { return err.response })
+		if (createUser.data != undefined) {
+			toastr["error"](`${createUser.data}`)
+		} else {
+			toastr["success"](`User Created`)
+			setTimeout(() => { window.location.replace("/employee") }, 2000)
+		}
+	}
+
+	window.onload = () => {
+		var userid = localStorage.getItem("userid")
+		if (userid == null) {
+			toastr["error"]("Please Login");
+			setTimeout(() => { window.location.replace("/") }, 1000)
+
+		}
+	}
+</script>
+
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/add-customer.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:44 GMT -->
+
+</html>

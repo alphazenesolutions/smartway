@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/add-expenses.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:44 GMT -->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Support</title>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/public/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/public/css/bootstrap.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/all.min.css">
+
+	<!-- Select2 CSS -->
+	<link rel="stylesheet" href="/public/plugins/select2/css/select2.min.css">
+
+	<!-- Datepicker CSS -->
+	<link rel="stylesheet" href="/public/css/bootstrap-datetimepicker.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="/public/css/style.css">
+
+	<link rel="stylesheet" href="/public/log/vendor/toaster/toaster/build/toastr.css">
+	<script src="/public/log/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="/public/log/vendor/toaster/toaster/build/toastr.min.js"></script>
+	<script src="/public/js/toaster.js"></script>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+		integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="/public/css/simplePagination.css">
+	<link rel="stylesheet" href="/public/css/stylepagination.css">
+</head>
+<style>
+	.selecttag {
+		width: 25%;
+		margin-bottom: 12px;
+		margin-left: 753px;
+	}
+
+	@media screen and (max-width:600px) {
+		.selecttag {
+			width: auto;
+			margin-bottom: 12px;
+			margin-left: 0px;
+		}
+	}
+
+	.tickets,
+	.tickets1 {
+		cursor: pointer;
+	}
+</style>
+
+<body>
+
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
+
+		<%- include('partial/header'); %>
+			<div class="page-wrapper">
+				<div class="content container-fluid">
+
+					<!-- Page Header -->
+
+
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-body">
+									<div class='selecttag'> <select class="select" onchange="subject()" id="subject">
+											<option value="none">Select Category</option>
+											<option value="Uploading Issue">Uploading Issue</option>
+											<option value="Payment Issue">Payment Issue</option>
+											<option value="Login Issue">Login Issue</option>
+											<option value="Acknowledgement Issue">Acknowledgement Issue</option>
+										</select></div>
+									<div>
+
+										<div class="row" id="tickets">
+
+										</div>
+										<div id="nodata" class="text-center">No Tickets</div>
+										<div id="pagination-container"></div>
+										<div id="pagination-container1"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+			<!-- /Page Wrapper -->
+
+	</div>
+	<!-- /Main Wrapper -->
+
+	<!-- jQuery -->
+	<script src="/public/js/main/jquery-3.5.1.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="/public/js/main/popper.min.js"></script>
+	<script src="/public/js/main/bootstrap.min.js"></script>
+
+	<!-- Feather Icon JS -->
+	<script src="/public/js/main/feather.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="/public/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+	<!-- Select2 JS -->
+	<script src="/public/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Datepicker Core JS -->
+	<script src="/public/plugins/moment/moment.min.js"></script>
+	<script src="/public/js/main/bootstrap-datetimepicker.min.js"></script>
+
+	<!-- Datatables JS -->
+	<script src="/public/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/public/plugins/datatables/datatables.min.js"></script>
+
+	<!-- Custom JS -->
+	<script src="/public/js/main/script.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase.js"></script>
+	<script src="/public/js/jquery.simplePagination.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+<script src="/public/js/custom/firebase.js"></script>
+<script>
+
+	mytikets()
+	async function mytikets() {
+		var userid = localStorage.getItem("userid")
+		if (userid !== null) {
+			const mytickets = await axios.get(`https://api.smartwayonline.in/support`).then((res) => { return res.data }).catch((err) => { return false })
+			mytickets.forEach((ticket) => {
+				document.getElementById("tickets").innerHTML +=
+					`
+			<div class="card col-md-12 tickets" >
+			<div class="card-body" id="Acknowledgement_Issue_${ticket.ticketid}" onclick="viewticket(this)">
+				<p>${ticket.subject} <span style='float: right'>${ticket.ticketdate}</span></p>				
+				<p>Name : ${ticket.name}</p>
+				<p>Phone : ${ticket.number}</p>
+				<p>Email : ${ticket.email}</p>
+				<p>Message : ${ticket.message} </p>
+				</div>
+				<div style='cursor: pointer;position: absolute;
+    bottom: 35px;
+    right: 38px;'><span  class='${ticket.subject}' id='${ticket.id}' onclick='del(this)'><i class="fa fa-trash" aria-hidden="true"></i></span></div>
+			</div>
+			`
+			})
+			pagination(mytickets.length)
+		}
+	}
+
+	async function subject() {
+		var subject = document.getElementById("subject").value
+		if (subject == "none") return window.location.reload()
+		var userid = localStorage.getItem("userid")
+		document.getElementById("tickets").innerHTML = ""
+		if (userid !== null) {
+			const mytickets = await axios.get(`https://api.smartwayonline.in/support`).then((res) => { return res.data }).catch((err) => { return false })
+			const filtersubject = await mytickets.filter((tickets) => { return tickets.subject == subject })
+			filtersubject.forEach((filteredsubject) => {
+				document.getElementById("tickets").innerHTML +=
+					`
+			<div class="card col-md-12 tickets" >
+			<div class="card-body" id="Acknowledgement_Issue_${filteredsubject.ticketid}" onclick="viewticket(this)">
+				<p>${filteredsubject.subject} <span style='float: right'>${filteredsubject.ticketdate}</span></p>				
+				<p>Name : ${filteredsubject.name}</p>
+				<p>Phone : ${filteredsubject.number}</p>
+				<p>Email : ${filteredsubject.email}</p>
+				<p>Message : ${filteredsubject.message} </p>
+				</div>
+				<div style='cursor: pointer;position: absolute;
+    bottom: 35px;
+    right: 38px;'><span  class='${filteredsubject.subject}' id='${filteredsubject.id}' onclick='del(this)'><i class="fa fa-trash" aria-hidden="true"></i></span></div>
+			</div>
+			`
+			})
+			pagination(filtersubject.length)
+		}
+	}
+
+	function pagination(length) {
+		if (length == 0) {
+			document.getElementById("nodata").style.display = "block"
+		} else {
+			document.getElementById("nodata").style.display = "none"
+		}
+		if (length > 8) {
+			var items = $("#tickets .tickets1");
+			var numItems = length;
+			var perPage = 8;
+			items.slice(perPage).hide();
+
+			$('#pagination-container1').pagination({
+				items: numItems,
+				itemsOnPage: perPage,
+				prevText: "&laquo;",
+				nextText: "&raquo;",
+				onPageClick: function (pageNumber) {
+					var showFrom = perPage * (pageNumber - 1);
+					var showTo = showFrom + perPage;
+					items.hide().slice(showFrom, showTo).show();
+				}
+			});
+		}
+	}
+	del = async (e) => {
+		const delticket = await axios.delete(`https://api.smartwayonline.in/support/${e.id}`).then((res) => { return res.data }).catch((err) => { return false })
+		if (delticket == true) {
+			toastr["success"](`Your Ticket Deleted`)
+			setTimeout(() => { window.location.reload() }, 2000)
+		}
+	}
+	function viewticket(e) {
+		console.log(e.id)
+		window.location.replace("/tickets/" + e.id)
+	}
+	window.onload = () => {
+		var userid = localStorage.getItem("userid")
+		if (userid == null) {
+			toastr["error"]("Please Login");
+			setTimeout(() => { window.location.replace("/") }, 1000)
+
+		}
+	}
+</script>
+
+</html>

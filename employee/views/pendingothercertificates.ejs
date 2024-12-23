@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Mirrored from kanakku.dreamguystech.com/template-html/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:39 GMT -->
+
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <title>Pending Other Certificates</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/public/img/favicon.png" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css" />
+
+    <!-- Fontawesome CSS -->
+    <link
+      rel="stylesheet"
+      href="/public/plugins/fontawesome/css/fontawesome.min.css"
+    />
+    <link rel="stylesheet" href="/public/plugins/fontawesome/css/all.min.css" />
+
+    <!-- Datatables CSS -->
+    <link
+      rel="stylesheet"
+      href="/public/plugins/datatables/datatables.min.css"
+    />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/public/css/simplePagination.css" />
+    <link rel="stylesheet" href="/public/css/stylepagination.css" />
+
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="/public/log/vendor/toaster/toaster/build/toastr.css"
+    />
+    <script src="/public/log/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/public/log/vendor/toaster/toaster/build/toastr.min.js"></script>
+    <script src="/public/js/toaster.js"></script>
+    <!--[if lt IE 9]>
+      <script src="/public/js/main/html5shiv.min.js"></script>
+      <script src="/public/js/main/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <style>
+    .page-wrapper {
+      margin-left: 0px !important;
+      padding-top: 60px;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+  </style>
+
+  <body>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <%- include('partial/header'); %>
+
+      <!-- Page Wrapper -->
+      <div class="page-wrapper">
+        <div class="content container-fluid">
+          <!-- Page Header -->
+
+          <!-- /Page Header -->
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="card-title">All Certificates</h4>
+                </div>
+                <div class="card-body">
+                  <select
+                    class="form-control mb-3 ml-5 FilterBy_status"
+                    style="float: right; width: 25%"
+                    id="status"
+                    onchange="Filter_status()"
+                  >
+                    <option value="All">Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                  <select
+                    class="form-control mb-3"
+                    style="float: right; width: 25%"
+                    id="dates"
+                  >
+                    <option value="All">All</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                  </select>
+                  <div class="table-responsive">
+                    <table class="datatable table">
+                      <thead>
+                        <tr>
+                          <th>Applied On</th>
+                          <!-- <th>Applied By</th> -->
+                          <th>Applied Ph</th>
+                          <th>Applied Email</th>
+                          <th>Name</th>
+                          <!-- <th>Email</th> -->
+                          <th>Phone No</th>
+                          <th>Certificates</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="history"></tbody>
+                    </table>
+                    <div id="nodata" class="text-center">No data</div>
+                  </div>
+                </div>
+              </div>
+              <div id="pagination-container" style="float: right"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /Page Wrapper -->
+    </div>
+    <!-- /Main Wrapper -->
+
+    <script src="/public/js/main/jquery-3.5.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="/public/js/main/popper.min.js"></script>
+    <script src="/public/js/main/bootstrap.min.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="/public/js/main/feather.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="/public/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="/public/plugins/select2/js/select2.min.js"></script>
+
+    <!-- Datepicker Core JS -->
+    <script src="/public/plugins/moment/moment.min.js"></script>
+    <script src="/public/js/main/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Datatables JS -->
+    <script src="/public/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/public/plugins/datatables/datatables.min.js"></script>
+
+    <!-- Custom JS -->
+    <!-- <script src="/public/js/main/script.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+			 https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
+    <!-- <script src="/public/js/custom/history.js"></script> -->
+
+    <script src="/public/js/jquery.simplePagination.js"></script>
+    <script src="/public/js/custom/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </body>
+  <script>
+    // Filter_status
+    const Filter_status = async (e) => {
+      document.getElementById("history").innerHTML = "";
+      var Changestatus = document.getElementById("status").value;
+      console.log(Changestatus);
+      var filtered_status;
+      if (Changestatus == "Pending") {
+        filtered_status = "false";
+      } else if (Changestatus == "Completed") {
+        filtered_status = "true";
+      } else {
+        pendingallcertificate();
+      }
+      var alldata = await axios
+        .patch("https://api.smartwayonline.in/othercertificates/status", {
+          status: "false",
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          if (err) return false;
+        });
+      console.log(filtered_status);
+      penall = alldata.filter((data) => {
+        console.log(data);
+        return data.iscomplete == filtered_status;
+      });
+      console.log(penall);
+
+      for (i = 0; i < penall.length; i++) {
+        if (
+          penall[i].certificatename == "FSSAI Certificate" ||
+          penall[i].certificatename == "Aadhar DOB Update" ||
+          penall[i].certificatename == "Aadhar Address Update" ||
+          penall[i].certificatename == "Aadhar Name Update" ||
+          penall[i].certificatename == "Aadhar Phone Update"
+        ) {
+          console.log(penall[i]);
+          document.getElementById("history").innerHTML += `
+                           <tr class='history'>
+                           <td>
+                           <div class="userDatatable-content">
+                               ${moment(penall[i].date).format(
+                                 "YYYY-MM-DD, h:mm a"
+                               )}
+                           </div>
+                       </td>
+
+                       <td>
+                           <div class="userDatatable-content">
+                               ${penall[i].appliedeno}
+                           </div>
+                       </td>
+                       <td>
+                           <div class="userDatatable-content">
+                               ${penall[i].appliedemail}
+                           </div>
+                       </td>
+                       <td>
+                         <div class="userDatatable-content">
+                               ${penall[i].name}
+                           </div>
+                       </td>
+
+                       <td>
+                           <div class="userDatatable-content">
+                               ${penall[i].number}
+                           </div>
+                       </td>
+                       <td>
+                          <div class="userDatatable-content">
+      <a href="javascript:void(0)" id='${
+        penall[i].certificateid
+      }' style="color:${
+            penall[i].slip == "null" ? "blue" : "green"
+          }" onclick="opencertificate(this)" >${penall[i].certificatename}</a>
+              </div>
+                       </td>
+                       <td>
+                          <button class="btn btn-primary" id='${
+                            penall[i].certificateid
+                          }' ${
+            penall[i].iscomplete == "true" ? "" : "onclick='complete(this)'"
+          } >${
+            penall[i].iscomplete == "true" ? "Completed" : "Pending"
+          }</button>
+                       </td>
+                       <td>
+                      	<button class='btn btn-danger' id='${
+                          penall[i].id
+                        }' value='${
+            penall[i].userid
+          }' onclick='del(this)'>Delete</button>
+                       </td>
+                       <td id="refunddiv${penall[i].id}" style="display:none">
+                          <input type="text" placeholder="Refund Amount" class="form-control" id="refundvalue${
+                            penall[i].id
+                          }"></input>
+                          <button class="btn btn-info m-2" id='${
+                            penall[i].id
+                          }' value='${
+            penall[i].userid
+          }' onclick='submitbtn(this)'>Submit</button>
+                          </td>
+                    </tr>`;
+        }
+      }
+      pagination(penall.length);
+      if (penall.length == 0) {
+        document.getElementById("nodata").style.display = "block";
+      } else {
+        document.getElementById("nodata").style.display = "none";
+      }
+    };
+    //
+    pendingothercertificate();
+    async function pendingothercertificate() {
+      var penother = await axios
+        .patch("https://api.smartwayonline.in/othercertificates/status", {
+          status: "false",
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          if (err) return false;
+        });
+      for (i = 0; i < penother.length; i++) {
+        if (
+          penall[i].certificatename != "FSSAI Certificate" &&
+          penall[i].certificatename != "Aadhar DOB Update" &&
+          penall[i].certificatename != "Aadhar Address Update" &&
+          penall[i].certificatename != "Aadhar Name Update" &&
+          penall[i].certificatename != "Aadhar Phone Update"
+        ) {
+          document.getElementById("history").innerHTML += `
+                        <tr class='history'>
+                        <td>
+                        <div class="userDatatable-content">
+                            ${moment(penother[i].date).format(
+                              "YYYY-MM-DD, h:mm a"
+                            )}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="userDatatable-content">
+                            ${penother[i].appliedeno}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="userDatatable-content">
+                            ${penother[i].appliedemail}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="userDatatable-content">
+                            ${penother[i].name}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="userDatatable-content">
+                            ${penother[i].number}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="userDatatable-content">
+    <a href="javascript:void(0)" id='${
+      penother[i].certificateid
+    }' style="color:${
+            penother[i].slip == "null" ? "blue" : "green"
+          }" onclick="opencertificate(this)" >${penother[i].certificatename}</a>
+            </div>
+                     </td>
+                     <td>
+                      <button class="btn btn-primary" id='${
+                        penall[i].certificateid
+                      }' ${
+            penall[i].iscomplete == "true" ? "" : "onclick='complete(this)'"
+          } >${
+            penall[i].iscomplete == "true" ? "Completed" : "Pending"
+          }</button>
+                     </td>
+
+                     <td id="refunddiv${penother[i].id}" style="display:none">
+                        <input type="text" placeholder="Refund Amount" class="form-control" id="refundvalue${
+                          penother[i].id
+                        }"></input>
+                        <button class="btn btn-info m-2" id='${
+                          penother[i].id
+                        }' value='${
+            penother[i].userid
+          }' onclick='submitbtn(this)'>Submit</button>
+                        </td>
+                    </tr>`;
+        }
+      }
+      pagination(penother.length);
+      if (penother.length == 0) {
+        document.getElementById("nodata").style.display = "block";
+      } else {
+        document.getElementById("nodata").style.display = "none";
+      }
+    }
+
+    function pagination(length) {
+      if (length > 20) {
+        var items = $("#history .history");
+        var numItems = length;
+        var perPage = 20;
+
+        items.slice(perPage).hide();
+
+        $("#pagination-container").pagination({
+          items: numItems,
+          itemsOnPage: perPage,
+          prevText: "&laquo;",
+          nextText: "&raquo;",
+          onPageClick: function (pageNumber) {
+            var showFrom = perPage * (pageNumber - 1);
+            var showTo = showFrom + perPage;
+            items.hide().slice(showFrom, showTo).show();
+          },
+        });
+      }
+    }
+
+    function opencertificate(e) {
+      var certificateid = e.id;
+      localStorage.setItem("certificateid", certificateid);
+      window.open(`/download/othercertificates/${certificateid}`);
+    }
+    complete = async (e) => {
+      var certificateid = e.id;
+      const updateStatus = await axios
+        .put(
+          `https://api.smartwayonline.in/othercertificates/${certificateid}`,
+          { iscomplete: "true" }
+        )
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return false;
+        });
+      console.log(updateStatus, certificateid);
+      if (updateStatus == true) {
+        toastr["success"](`Status Updated`);
+      }
+    };
+    del = async (e) => {
+      var certificateid = e.id;
+      console.log(e.id);
+      const updateStatus = await axios
+        .put(
+          `https://api.smartwayonline.in/othercertificates/cancel/${certificateid}`,
+          { iscomplete: "cancel" }
+        )
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return false;
+        });
+      document.getElementById(`refunddiv${certificateid}`).style.display =
+        "block";
+    };
+    submitbtn = async (e) => {
+      var amount = document.getElementById(`refundvalue${e.id}`).value;
+      // const updateStatus = await axios
+      //   .delete(`https://api.smartwayonline.in/othercertificates/${e.id}`)
+      //   .then((res) => {
+      //     return res.data;
+      //   })
+      //   .catch((err) => {
+      //     return false;
+      //   });
+      // if (updateStatus == true) {
+      //   toastr["success"](`Certificate Deleted`);
+      var paymentsend = await axios
+        .post(`https://api.smartwayonline.in/payment/paymentsend`, {
+          userid: e.value,
+          wallet: Number(amount),
+        })
+        .then((res) => {
+          return res.data;
+        });
+      var todaydate = moment().format("DD-MM-YYYY");
+      const historyupdate = await axios
+        .post(`https://api.smartwayonline.in/paymenthistory/create`, {
+          paymentdate: todaydate,
+          amount: Number(amount),
+          number: "Refund",
+          razorpay_payment_id: null,
+          razorpay_order_id: null,
+          userid: e.value,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return err.response;
+        })
+        .catch((err) => {
+          return false;
+        });
+      window.location.reload();
+      // }
+    };
+  </script>
+
+  <!-- Mirrored from kanakku.dreamguystech.com/template-html/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:39 GMT -->
+</html>

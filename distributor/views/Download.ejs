@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/blank-page.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:29 GMT -->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Download Page</title>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/public/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/public/css/bootstrap.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/all.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="/public/css/style.css">
+
+	<!--[if lt IE 9]>
+			<script src="/public/js/main/html5shiv.min.js"></script>
+			<script src="/public/js/main/respond.min.js"></script>
+		<![endif]-->
+</head>
+<style>
+	#nodata {
+		display: none;
+	}
+</style>
+
+<body>
+
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
+		<%- include('partial/header'); %>
+
+			<!-- Page Wrapper -->
+			<div class="page-wrapper">
+				<div class="content container-fluid">
+
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row">
+							<div class="col-sm-12">
+								<h3 class="page-title">Download Page</h3>
+								<ul class="breadcrumb">
+									<li class="breadcrumb-item"><a href="index.html">Customer History</a></li>
+									<li class="breadcrumb-item active">Download Page</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Header -->
+
+					<div class="row">
+
+						<table class="datatable table">
+							<tbody id="downloaddata">
+
+							</tbody>
+						</table>
+
+					</div>
+					<div id="nodata" style="text-align: center;
+					margin-top: 18px;">No Slips</div>
+				</div>
+			</div>
+			<% certificatename=certificatename %>
+				<% certificateid=certificateid %>
+	</div>
+	<!-- /Main Wrapper -->
+
+	<!-- jQuery -->
+	<script src="/public/js/main/jquery-3.5.1.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="/public/js/main/popper.min.js"></script>
+	<script src="/public/js/main/bootstrap.min.js"></script>
+
+	<!-- Feather Icon JS -->
+	<script src="/public/js/main/feather.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="/public/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+	<!-- Select2 JS -->
+	<script src="/public/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Datepicker Core JS -->
+	<script src="/public/plugins/moment/moment.min.js"></script>
+	<script src="/public/js/main/bootstrap-datetimepicker.min.js"></script>
+
+	<!-- Datatables JS -->
+	<script src="/public/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/public/plugins/datatables/datatables.min.js"></script>
+
+	<!-- Custom JS -->
+	<!-- <script src="/public/js/main/script.js"></script> -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
+
+</body>
+<script src="/public/js/custom/firebase.js"></script>
+<script>
+	var mycertificatename = "<%= certificatename %>"
+	var mycertificateid = "<%= certificateid %>"
+</script>
+<script>
+	mycertificate()
+	async function mycertificate() {
+		var userid = localStorage.getItem("userid")
+		if (userid != null) {
+			if (mycertificatename == "othercertificates") {
+				var myothercertificates = await axios.get(`https://api.smartwayonline.in/othercertificates/${mycertificateid}`).then((res) => { return res.data }).catch((err) => { return false })
+				displayData(myothercertificates)
+			} else if (mycertificatename == "allcertificates") {
+				var myallcertificates = await axios.get(`https://api.smartwayonline.in/allcertificates/${mycertificateid}`).then((res) => { return res.data }).catch((err) => { return false })
+				displayData(myallcertificates)
+			} else {
+				var mypancertificates = await axios.get(`https://api.smartwayonline.in/pancertificates/${mycertificateid}`).then((res) => { return res.data }).catch((err) => { return false })
+				displayData(mypancertificates)
+			}
+		}
+	}
+
+	displayData = async (certificatedatas) => {
+		var mycertificate = JSON.parse(certificatedatas[0].certificates)
+		var slip = certificatedatas[0].slip
+		var downcertificate = []
+		var forms = []
+		for (var i = 0; i < mycertificate.length; i++) {
+			const key = Object.keys(mycertificate[i])[0]
+			const value = Object.values(mycertificate[i])[0]
+			if (value.includes("http")) {
+				downcertificate.push({ certificatesname: key, certificate: value })
+			} else {
+				forms.push({ certificatesfiled: key, certificatedate: value })
+			}
+		}				
+		for (var i = 0; i < forms.length; i++) {
+			if (forms[i].certificatesfiled !== "others") {
+				document.getElementById("downloaddata").innerHTML +=
+					`
+			<tr>
+				<td>${forms[i].certificatesfiled.toUpperCase()}</td>
+				<td>${forms[i].certificatedate}</td>
+		    </tr>
+			`
+			}
+
+		}
+		for (var i = 0; i < downcertificate.length; i++) {
+			document.getElementById("downloaddata").innerHTML +=
+				`
+			<tr>
+				<td>${downcertificate[i].certificatesname.toUpperCase()}</td>
+				<td><a href="${downcertificate[i].certificate}" target='_blank'>Download</a></td>
+		    </tr>
+			`
+		}
+		if (slip != "null") {
+			document.getElementById("downloaddata").innerHTML +=
+				`
+			<tr>
+				<td>SLIP</td>
+				<td><a href="${slip}" target='_blank'>Download</a></td>
+		    </tr>
+			`
+		}
+	}
+
+</script>
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/blank-page.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:29 GMT -->
+
+</html>

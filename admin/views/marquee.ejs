@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/add-payments.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 11:43:19 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>Marquee</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/public/img/favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="/public/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/public/plugins/fontawesome/css/all.min.css">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="/public/plugins/select2/css/select2.min.css">
+
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet" href="/public/css/bootstrap-datetimepicker.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/public/css/style.css">
+
+    <link rel="stylesheet" href="/public/log/vendor/toaster/toaster/build/toastr.css">
+    <script src="/public/log/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/public/log/vendor/toaster/toaster/build/toastr.min.js"></script>
+    <script src="/public/js/toaster.js"></script>
+</head>
+
+<body>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+
+        <%- include('partial/header'); %>
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8">
+
+                                                <div class="form-group">
+                                                    <label>Marquee</label>
+                                                    <textarea type="text" class="form-control" id="marquee"></textarea>
+                                                </div>
+                                                <div class="text-left mt-4">
+                                                    <button type="submit" class="btn btn-primary" id="addmor"
+                                                        onclick="addmarquee()">Save</button>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Wrapper -->
+
+    </div>
+    <!-- /Main Wrapper -->
+
+    <!-- jQuery -->
+    <script src="/public/js/main/jquery-3.5.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="/public/js/main/popper.min.js"></script>
+    <script src="/public/js/main/bootstrap.min.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="/public/js/main/feather.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="/public/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="/public/plugins/select2/js/select2.min.js"></script>
+
+    <!-- Datepicker Core JS -->
+    <script src="/public/plugins/moment/moment.min.js"></script>
+    <script src="/public/js/main/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="/public/js/main/script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/public/js/custom/firebase.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/public/js/custom/firebase.js"></script>
+</body>
+<script>
+
+    async function addmarquee() {
+
+        document.getElementById("addmor").innerHTML = " <span class='spinner-border spinner-border-sm mr-2' role='status'style='padding: 7px;' aria-hidden='true'></span>please wait..."
+
+        var marquee = document.getElementById("marquee").value
+        var newmarquee = {
+            message: marquee,
+            userid: localStorage.getItem("userid")
+        }
+        var marquees = await livemarquee()        
+        if (marquees.length == 0) {
+            var addmarquee = await axios.post(`https://api.smartwayonline.in/marquee/create`, newmarquee).then((res) => { return res.data }).catch((err) => { return err.response })
+            if (addmarquee.data != undefined) {
+                toastr["error"](`${addmarquee.data}`);
+            } else {
+                toastr["success"](`Marquee Added`);
+                setTimeout(() => { window.location.reload() }, 2000)
+            }
+        } else {
+            var marqueeid = marquees[0].id
+            var addmarquee = await axios.put(`https://api.smartwayonline.in/marquee/${marqueeid}`, newmarquee).then((res) => { return res.data }).catch((err) => { return err.response })
+            if (addmarquee.data != undefined) {
+                toastr["error"](`${addmarquee.data}`);
+            } else {
+                toastr["success"](`Marquee Added`);
+                setTimeout(() => { window.location.reload() }, 2000)
+            }
+        }
+
+
+    }
+    window.onload = async () => {
+        var userid = localStorage.getItem("userid")
+        if (userid == null) {
+            toastr["error"]("Please Login");
+            setTimeout(() => { window.location.replace("/") }, 1000)
+
+        }
+        var marquees = await livemarquee()               
+        if (marquees.length != 0) {
+            document.getElementById("marquee").value = marquees[0].message
+        }
+    }
+
+    livemarquee = async () => {
+
+        var marquee = await axios.get(`https://api.smartwayonline.in/marquee`).then((res) => { return res.data }).catch((err) => { return false })
+        if (marquee !== undefined) {
+            return marquee
+        }
+    }
+</script>
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/add-payments.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 11:43:19 GMT -->
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Admin History</h4>
+                </div>
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="datatable table">
+                            <thead>
+                                <tr>
+
+                                    <th>Email</th>
+
+                                    <th>Certificate</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="history">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDCnMVpASfEE0CIAXQCozWk7QoqyIfZpW0",
+            authDomain: "greenpay-in.firebaseapp.com",
+            projectId: "greenpay-in",
+            storageBucket: "greenpay-in.appspot.com",
+            messagingSenderId: "653510913427",
+            appId: "1:653510913427:web:a4c69580a6adf567ea0c66"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        var db = firebase.firestore()
+        db.collection("Documents").get()
+            .then(function (querySnapshot) {
+                var data = []
+                querySnapshot.forEach(function (doc) {
+                    // console.log(doc.data())		
+                    if (doc.data().certificates != undefined) {
+                        data.push(doc.data().certificates)
+                        console.log(Object.keys(doc.data().certificates).length)
+                        document.getElementById("history").innerHTML += `
+            <tr>         
+		<td>
+            <div class="userDatatable-content">
+                ${doc.data().email}
+            </div>
+		</td>	
+        <td>
+            <div class="userDatatable-content" id="certificate${doc.id}">
+            </div>
+        </td>
+		</tr>`
+                        for (var i = 0; i < Object.keys(doc.data().certificates).length; i++) {
+                            console.log(doc.data().certificates[i])
+                            document.getElementById(`certificate${doc.id}`).innerHTML += `
+				                <a href="/download" onclick="opencertificate(this)" class="${doc.data().certificates[i]}">${doc.data().certificates[i]}<br>`
+
+                        }
+                    }
+                })
+            })
+    </script>
+</body>
+
+</html>

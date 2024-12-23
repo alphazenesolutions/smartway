@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+<input type="file" id="file">
+<button id="test">Test</button>
+</body>
+
+<script>
+    document.getElementById("test").addEventListener("click",()=>{
+        var file=document.getElementById("file").files[0]
+        var extention=file.name.split(".")[1]
+        console.log(extention)
+    })
+</script>
+
+<script>
+    var datas = [
+    {
+            id: 12,
+            name: '["kalidas","qqq"]',
+            email: '{"name":"kalidas","info":["hai",200]}',
+            location: "location",
+            password: "password",
+            phone: "phone",
+            wallet: 0,
+           userid: "userid",
+        },
+        {
+            id: 1,
+            name: '["kalidas","qqq"]',
+            email: '{"name":"kalidas","info":["hai",200]}',
+            location: "location",
+            password: "password",
+            phone: "phone",
+            wallet: 0,
+           userid: "userid",
+        },
+        {
+            id: 11,
+            name: '["kalidas","qqq"]',
+            email: '{"name":"kalidas","info":["hai",200]}',
+            location: "location",
+            password: "password",
+            phone: "phone",
+            wallet: 0,
+           userid: "userid",
+        }
+    ]  
+    getalldata()
+    async function getalldata(){
+        var mydata=[]
+        var alldata=datas.forEach((data)=>{
+            data["email"]=JSON.parse(data.email)
+            data["name"]=JSON.parse(data.name)
+            mydata.push(data)
+        })
+        console.log(mydata)
+        
+    }
+</script>
+
+</html>

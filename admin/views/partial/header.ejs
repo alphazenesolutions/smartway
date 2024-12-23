@@ -1,0 +1,494 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+<style>
+    .starter-template {
+        padding: 40px 15px;
+        text-align: center;
+    }
+
+    a {
+        color: white;
+    }
+
+    a:hover {
+        color: white;
+    }
+
+    #notification-list {
+        width: 300px;
+        max-height: 200px;
+        overflow-y: scroll;
+    }
+
+    .dropdown-menu>.panel {
+        border: none;
+        margin: -5px 0;
+    }
+
+    .panel-heading,
+    .panel-footer {
+        background-color: #f1f1f1;
+        border-bottom: 1px solid #dedede;
+    }
+
+    .activity-item i {
+        float: left;
+        margin-top: 3px;
+        font-size: 16px;
+    }
+
+    div.activity {
+        margin-left: 28px;
+    }
+
+    div.activity-item {
+        padding: 7px 12px;
+    }
+
+    #notification-list div.activity-item {
+        border-top: 1px solid #f5f5f5;
+    }
+
+    #notification-list div.activity-item a {
+        font-weight: 600;
+    }
+
+    div.activity span {
+        display: block;
+        color: #999;
+        font-size: 11px;
+        line-height: 16px;
+    }
+
+    .noty_type_error * {
+        font-weight: normal !important;
+    }
+
+    .noty_type_error a {
+        font-weight: bold !important;
+    }
+
+    .noty_bar.noty_type_error a,
+    .noty_bar.noty_type_error i {
+        color: #fff
+    }
+
+    .noty_bar.noty_type_information a {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .noty_type_error div.activity span {
+        color: #fff
+    }
+
+    .noty_type_information div.activity span {
+        color: #fefefe
+    }
+
+    .no-notification {
+        padding: 10px 5px;
+        text-align: center;
+    }
+
+    .noty-manager-wrapper {
+        position: relative;
+        display: inline-block !important;
+    }
+
+    .noty-manager-bubble {
+        position: absolute;
+        top: -8px;
+        background-color: #fb6b5b;
+        color: #fff;
+        padding: 2px 5px !important;
+        font-size: 9px;
+        line-height: 12px;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        cursor: pointer;
+        height: 15px;
+        font-weight: bold;
+
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+        opacity: 0;
+    }
+
+    .panel {
+        width: 135%;
+    }
+
+    @media screen and (max-width:600px) {
+        .panel {
+            width: 100% !important;
+        }
+
+        .logo-small {
+            margin-left: -140px !important;
+        }
+    }
+</style>
+<div class="header">
+
+    <!-- Logo -->
+    <div class="header-left">
+        <a href="https://smartwayonline.in/" class="logo">
+            <img src="/public/img/logonew.png" alt="Logo">
+        </a>
+        <a href="https://smartwayonline.in/" class="logo logo-small">
+            <img src="/public/img/logo-small.png" alt="Logo" width="30" height="30">
+        </a>
+    </div>
+    <!-- /Logo -->
+    <!-- Mobile Menu Toggle -->
+    <a class="mobile_btn" id="mobile_btn">
+        <i class="fas fa-bars"></i>
+    </a>
+    <!-- Header Menu -->
+    <ul class="nav user-menu">
+        <li class="nav-item dropdown has-arrow main-drop">
+            <a href="/payment/addpayments" class="mr-1 nav-link">
+                Balance : ₹ <span id="balance1"> 0 </span>
+            </a>
+        </li>
+
+
+        <ul class="notificationsbtn nav navbar-nav navbar-right" style="margin-top: 17px;
+        font-size: 17px;">
+            <li id="notificationsli">
+                <!--class="dropdown-toggle" data-toggle="dropdown" in a tag-->
+                <a id="notifications" href='/tickets' style="color: #337ab7;" href="#" id="drop3" role="button"><i
+                        class="fa fa-bell"></i>
+                    <span class="noty-manager-bubble" id="counts"
+                        style="margin-left: -2px; top: 10px; opacity: 1;">0</span></a>
+
+                <div id="notification-container" class="dropdown-menu" role="menu" aria-labelledby="drop3">
+
+                    <section class="panel">
+                        <header class="panel-heading" style="padding: 5px;">
+                            <strong>Notifications</strong>
+                        </header>
+                        <div id="notification-list" class="list-group list-group-alt">
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="">
+                                <div class="noty-manager-list-item noty-manager-list-item-error">
+                                    <div class="activity-item"> <i class="fa fa-bell text-success"></i>
+                                        <div class="activity">
+                                            <p>Eugene ordered 2 copies of OEM license<span>14 minutes ago</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <footer class="panel-footer" style="padding: 5px;">
+                            <a href="#notes" data-toggle="class:show animated fadeInRight">
+                                <p style="color: black;"><strong>Clear all notifications</strong> </p>
+                            </a>
+                        </footer>
+                    </section>
+
+                </div>
+            </li>
+        </ul>
+
+
+        <li class="nav-item dropdown has-arrow main-drop">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <span class="user-img">
+                    <img src="/public/img/favicon.png" alt="">
+                    <span class="status online"></span>
+                </span>
+                <span id="username">Admin</span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="/dashboard"><i data-feather="home" class="mr-1"></i>
+                    Dashboard</a>
+                <a class="dropdown-item" href="javascript:void(0)" onclick="checkout()"><i data-feather="log-out"
+                        class="mr-1"></i>
+                    Logout</a>
+            </div>
+        </li>
+        <!-- /User Menu -->
+
+    </ul>
+    <!-- /Header Menu -->
+    <div>
+        <marquee style="font-size: 25px;background-color: #dee2e6;height: 30px;color: red;" id="marqueedata">Welcome To
+            Smart Way</marquee>
+    </div>
+
+</div>
+<!-- /Header -->
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu">
+            <ul>
+                <li class="submenu">
+                    <a href="/dashboard"><i data-feather="home"></i> <span>Dashboard</span>
+                        <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li class="submenu"><a href="chat.html">Certificates <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/certificate/Incomecertificate"> Income Certificate </a></li>
+                                <li><a href="/certificate/Firstgraduatecertificate"> First Graduate Certificate </a>
+                                </li>
+                                <li><a href="/certificate/Communitycertificate"> Community Certificte </a></li>
+                                <li><a href="/certificate/Widowcertificate"> Widow Certificate </a></li>
+                                <li><a href="/certificate/Intercastecertificate"> Inter Caste Marriage Certificate </a>
+                                </li>
+                                <li><a href="/certificate/Unmarriedcertificate"> Unmarried Certificate </a></li>
+                                <li><a href="/certificate/Unemploymentcerificate"> UnEmployeMent Certificte </a></li>
+                                <li><a href="/certificate/Nativecertificate"> Native Certificate </a></li>
+                                <li><a href="/certificate/Legalheircertificate"> LegelHeir Certificate </a></li>
+                                <li><a href="/certificate/Obccertificate"> OBC Certificate </a></li>
+                                <li><a href="/certificate/Nomalecertificate"> No Male Child Certificte </a></li>
+                                <li><a href="/certificate/OAB"> OAB </a></li>
+                                <li><a href="/certificate/migration-certificate"> Migration Certificate </a></li>
+                                <li><a href="/certificate/farmer-certificate"> Farmer Certificate </a></li>
+                                <li><a href="/certificate/widow-pension"> Widow Pension </a></li>
+                                <li><a href="/certificate/Residential"> Residential Certificate </a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu"><a href="chat.html">Insurance<span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/insurance/two"> Two Wheeler Insurance </a></li>
+                                <li><a href="/insurance/four"> Four Wheeler Insurance </a></li>
+                                <li><a href="/insurance/bus"> Bus / Lorry Insurance </a></li>
+                                <li><a href="/insurance/auto"> Auto Insurance </a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu"><a href="javascript:void(0)">Aadhar<span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/aadhar/name"> Aadhar Name Update</a></li>
+                                <li><a href="/aadhar/address"> Aadhar Address Update </a></li>
+                                <li><a href="/aadhar/dob">Aadhar DOB Update </a></li>
+                                <li><a href="/aadhar/phone"> Aadhar Phone Number Update </a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu"><a href="chat.html">Ticket Booking<span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/tickets/Flightticket"> Flight Ticket Booking </a></li>
+                                <li><a href="/tickets/Traintickets"> Train Ticket Booking </a></li>
+                                <li><a href="/tickets/Thirupathiticket"> Thirupathi Dharisanam Ticket Booking</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu"><a href="chat.html">ID Proof<span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/certificate/Pancertificate"> Pan Card </a></li>
+                                <li><a href="/certificate/Voteridcertificate"> Voter Id </a></li>
+                                <li><a href="/certificate/Smartcard"> SmartCard </a></li>
+                                <li><a href="https://www.myutiitsl.com/PAN_ONLINE/ePANCard"> E-Pan Registation </a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu"><a href="/passport">Passport<span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/passport/passportnew"> New Passport </a></li>
+                                <li><a href="/passport/passportrenewal"> Renewal Passport </a></li>
+                                <li><a href="/passport/policeclearance"> Police Clearance Certificate </a></li>
+                                <li><a href="/passport/tatkal"> Tatkaal Scheme </a></li>
+                                <li><a href="/passport/childrenewal"> Child Renewal Passport </a></li>
+                                <li><a href="/passport/childadult"> Child Adult Passport </a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="/insurance/foodlicence"> Food Licence Insurance </a></li>
+                        <li><a href="/certificate/MSMEcertificate"> MSME </a></li>
+                        <li><a href="/certificate/Gstcertificate"> Gst </a></li>
+
+                        <li><a href="/certificate/itfiling"> It Filing </a></li>
+                        <li><a href="/certificate/pattatransfer"> Patta Transfer </a></li>
+                        <li><a href="/certificate/IRCTC"> IRCTC </a></li>
+                        <li><a href="/certificate/gstmonthly"> Gst Monthly Filing </a></li>
+                        <li><a href="/certificate/incometax"> Income Tax Return </a></li>
+                        <li><a href="/certificate/FSSAI"> Fssai Licence </a></li>
+                        <li><a href="/certificate/Fire"> Fire Licence </a></li>
+                        <li><a href="/certificate/Pvt"> Pvt Limited Registation </a></li>
+                        <li><a href="/certificate/drug"> Drug Licence (Medical Shop) </a></li>
+
+                    </ul>
+                </li>
+                <li>
+                    <a href="/history"><i data-feather="file-text"></i> <span>Applied Certificate</span></a>
+                </li>
+                <li>
+                    <a href="/certificates"><i data-feather="layers"></i> <span>Certificates</span></a>
+                </li>
+                <li>
+                    <a href="/pendingcertificate"><i data-feather="activity"></i> <span>Pending Certificate</span></a>
+                </li>
+
+                <li>
+                    <a href="/clientreg"><i data-feather="user-plus"></i> <span>Retailer Request</span></a>
+                </li>
+                <li>
+                    <a href="/retailers"><i data-feather="users"></i> <span>Retailers</span></a>
+                </li>
+                <li>
+                    <a href="/distributorreq"><i data-feather="user-plus"></i> <span>Distributor Request</span></a>
+                </li>
+
+                <li>
+                    <a href="/distributors"><i data-feather="users"></i> <span>Distributors</span></a>
+                </li>
+                <li>
+                    <a href="/employee"><i data-feather="briefcase"></i> <span>Employee</span></a>
+                </li>
+                <li>
+                    <a href="/payment"><i data-feather="credit-card"></i> <span>Payments</span></a>
+                </li>
+                <li>
+                    <a href="/wallethistory"><i data-feather="credit-card"></i> <span>Wallet History</span></a>
+                </li>
+
+                <li>
+                    <a href="/marquee"><i data-feather="settings" data-toggle="modal" data-target="#new-member"></i>
+                        <span>Marquee</span></a>
+                </li>
+                <li>
+                    <a href="/tickets"><i class="fa fa-ticket" aria-hidden="true"></i><span>Tickets</span></a>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+			 https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
+<script src="/public/js/custom/firebase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    marquee();
+    async function marquee() {
+
+        var marquee = await axios.get(`https://api.smartwayonline.in/marquee`).then((res) => { return res.data }).catch((err) => { return false })
+        if (marquee.length !== 0) {
+            document.getElementById("marqueedata").innerHTML = ""
+            marquee.forEach((marque) => {
+                document.getElementById("marqueedata").innerHTML += `<span style='margin-right: 20px;'>${marque.message}</span>`
+            })
+        }
+    }
+    myinfo()
+    async function myinfo() {
+        var userid = localStorage.getItem("userid");
+        if (userid != null) {
+            var myinfo = await axios.get(`https://api.smartwayonline.in/admin/${userid}`).then((res) => { return res.data }).catch((err) => { return false })
+            if (myinfo) {
+                document.getElementById("username").innerHTML = myinfo[0].name
+                document.getElementById("balance1").innerHTML = myinfo[0].wallet
+            }
+
+        }
+    }
+    function checkout() {
+        localStorage.clear()
+        window.location.replace("/")
+    }
+</script>

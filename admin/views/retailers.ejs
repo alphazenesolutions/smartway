@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:39 GMT -->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Retailers</title>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/public/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/public/css/bootstrap.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="/public/plugins/fontawesome/css/all.min.css">
+
+	<!-- Datatables CSS -->
+	<link rel="stylesheet" href="/public/plugins/datatables/datatables.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="/public/css/style.css">
+	<link rel="stylesheet" href="/public/css/simplePagination.css">
+	<link rel="stylesheet" href="/public/css/stylepagination.css">
+
+	<!--[if lt IE 9]>
+			<script src="/public/js/main/html5shiv.min.js"></script>
+			<script src="/public/js/main/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
+
+		<%- include('partial/header'); %>
+
+			<!-- Page Wrapper -->
+			<div class="page-wrapper">
+				<div class="content container-fluid">
+
+					<!-- Page Header -->
+
+					<!-- /Page Header -->
+
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="card-title">Retailers Details</h4>
+								</div>
+								<div class="card-body">
+
+									<div class="table-responsive">
+										<table class="datatable table">
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th>Email</th>
+													<th>Phone Number</th>
+													<th>Password</th>
+													<th>Wallet</th>
+													<th>Location</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody id="Regdata">
+
+											</tbody>
+										</table>
+										<div id="pagination-container" style="float: right;"></div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- /Page Wrapper -->
+
+	</div>
+
+	<!-- /Main Wrapper -->
+
+	<script src="/public/js/main/jquery-3.5.1.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="/public/js/main/popper.min.js"></script>
+	<script src="/public/js/main/bootstrap.min.js"></script>
+
+	<!-- Feather Icon JS -->
+	<script src="/public/js/main/feather.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="/public/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+	<!-- Select2 JS -->
+	<script src="/public/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Datepicker Core JS -->
+	<script src="/public/plugins/moment/moment.min.js"></script>
+	<script src="/public/js/main/bootstrap-datetimepicker.min.js"></script>
+
+	<!-- Datatables JS -->
+	<script src="/public/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/public/plugins/datatables/datatables.min.js"></script>
+
+	<!-- Custom JS -->
+	<script src="/public/js/main/script.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase.js"></script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+			 https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
+	<script src="/public/js/jquery.simplePagination.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+<script src="/public/js/custom/firebase.js"></script>
+<script>
+
+	userreg()
+	async function userreg() {
+		const userreg = await axios.get(`https://api.smartwayonline.in/user`).then((res) => { return res.data }).catch((error) => { return false })
+		userreg.forEach((user) => {
+			document.getElementById("Regdata").innerHTML += `
+            <tr class='Regdata'>
+            <td>
+            <div class="userDatatable-content">
+                ${user.name}
+            </div>
+		</td>
+		<td>
+            <div class="userDatatable-content">
+                ${user.email}
+            </div>
+		</td>
+		<td>
+            <div class="userDatatable-content">
+                ${user.number}
+            </div>
+		</td>
+		<td>
+            <div class="userDatatable-content">
+                ${user.password}
+            </div>
+		</td>
+		<td>
+            <div class="userDatatable-content">
+				₹ ${user.wallet}
+            </div>
+		</td>
+		<td>
+            <div class="userDatatable-content">
+                ${user.location}
+            </div>
+		</td>	
+		<td id="addamount${user.userid}" style="display:block;">
+            <div class="userDatatable-content">
+               <button class="btn btn-info" id='${user.userid}' value="${user.wallet}" onclick="addwallet(this)">Add Wallet</button>
+            </div>
+		</td>
+		<td id="enteramount${user.userid}" style="display:none;">
+            <div class="userDatatable-content">
+               <input class="form-control" placeholder="Enter Amount" id="amount${user.userid}"></input>
+			   <button class="btn btn-info mt-2" id='${user.userid}' value="${user.wallet}" onclick="addamount(this)">Submit</button>
+            </div>
+		</td>				
+		</tr>`
+		})
+		pagination(userreg.length)
+	}
+
+	function pagination(length) {
+		if (length > 10) {
+			var items = $("#Regdata .Regdata");
+			var numItems = length;
+			var perPage = 30;
+			items.slice(perPage).hide();
+
+			$('#pagination-container').pagination({
+				items: numItems,
+				itemsOnPage: perPage,
+				prevText: "&laquo;",
+				nextText: "&raquo;",
+				onPageClick: function (pageNumber) {
+					var showFrom = perPage * (pageNumber - 1);
+					var showTo = showFrom + perPage;
+					items.hide().slice(showFrom, showTo).show();
+				}
+			});
+		}
+
+	}
+	if (localStorage.getItem("count") == null) {
+		document.getElementById("counts").innerHTML = 0
+	} else {
+		document.getElementById("counts").innerHTML = localStorage.getItem("count")
+	}
+	function addwallet(e) {
+		document.getElementById(`enteramount${e.id}`).style.display = "block"
+		document.getElementById(`addamount${e.id}`).style.display = "none"
+	}
+	async function addamount(e) {
+		var newamount = document.getElementById(`amount${e.id}`).value
+		var paymentsend = await axios.post(`https://api.smartwayonline.in/payment/paymentsend`, {
+			userid: e.id,
+			wallet: Number(newamount),
+		}).then((res) => { return res.data }).catch((err) => { return false })
+		if (paymentsend !== true) return alert("Something Wrong")
+		var todaydate = moment().format("DD-MM-YYYY")
+		const historyupdate = await axios.post(`https://api.smartwayonline.in/paymenthistory/create`, {
+			paymentdate: todaydate,
+			amount: Number(newamount),
+			number: null,
+			razorpay_payment_id: null,
+			razorpay_order_id: null,
+			userid: e.id
+		}).then((res) => { return res.data }).catch((err) => { return err.response })
+		if (historyupdate.amount !== null) {
+			if (historyupdate.data != undefined) {
+				setTimeout(() => { window.location.reload() }, 2000)
+			} else {
+				setTimeout(() => { window.location.reload() }, 2000)
+			}
+		}
+
+	}
+</script>
+
+<!-- Mirrored from kanakku.dreamguystech.com/template-html/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Feb 2021 23:22:39 GMT -->
+
+</html>
